@@ -9,12 +9,13 @@
       href="https://avatars.githubusercontent.com/u/151067388"
       type="image/png"
     />
-    <link rel="stylesheet" href="/lib/bulma.min.css" />
+    <link rel="stylesheet" href="../lib/bulma.min.css" />
     <title>Ratisbon Robotics</title>
+    <script src="../lib/util.js"></script>
     <script>
       document.addEventListener("DOMContentLoaded", function () {
-        loadExternalHTML("/lib/navbar.html", "navbar");
-        loadExternalHTML("/lib/footer.html", "footer");
+        loadExternalHTML("../lib/navbar.html", "navbar");
+        loadExternalHTML("../lib/footer.html", "footer");
       });
     </script>
     <style>
@@ -118,13 +119,13 @@
             </div>
           </div>
         </div>
-        <script src="/lib/util.js"></script>
-        <script src="/lib/vector3f.js"></script>
-        <script src="/lib/matrix3f.js"></script>
-        <script src="/lib/matrix4f.js"></script>
-        <script src="/lib/webgl.js"></script>
-        <script src="/sim/shader.js"></script>
-        <script src="/sim/camera.js"></script>
+        <script src="../lib/util.js"></script>
+        <script src="../lib/vector3f.js"></script>
+        <script src="../lib/matrix3f.js"></script>
+        <script src="../lib/matrix4f.js"></script>
+        <script src="../lib/webgl.js"></script>
+        <script src="../sim/shader.js"></script>
+        <script src="../sim/camera.js"></script>
         <script>
           // --- SETUP ENVIRONMENT ---
           let keys = {};
@@ -157,10 +158,10 @@
             keys[event.key] = false;
           });
         </script>
-        <script src="/sim/main.js"></script>
-        <script src="/sim/dynamics.js"></script>
-        <script src="/sim/control.js"></script>
-        <script src="/sim/vlm.js"></script>
+        <script src="../sim/main.js"></script>
+        <script src="../sim/dynamics.js"></script>
+        <script src="../sim/control.js"></script>
+        <script src="../sim/vlm.js"></script>
       </article>
     </div>
     <div id="footer"></div>
