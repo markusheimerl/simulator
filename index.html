@@ -11,158 +11,38 @@
     />
     <link rel="stylesheet" href="/lib/bulma.min.css" />
     <title>Ratisbon Robotics</title>
+    <script src="/lib/util.js"></script>
     <script>
       document.addEventListener("DOMContentLoaded", function () {
         loadExternalHTML("/lib/navbar.html", "navbar");
         loadExternalHTML("/lib/footer.html", "footer");
       });
+
+      ["load", "resize"].forEach(function (event) {
+        window.addEventListener(event, function () {
+          let iframe = document.querySelector("iframe");
+          try {
+            const iframeDocument = iframe.contentWindow.document;
+            const height = iframeDocument.body.scrollHeight + 50;
+            iframe.style.height = height + "px";
+          } catch (e) {
+            console.error("Error resizing iframe:", e);
+          }
+        });
+      });
     </script>
-    <style>
-      .overlay {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(255, 255, 255, 0.8);
-        display: none;
-        justify-content: center;
-        align-items: center;
-        text-align: center;
-        z-index: 10;
-      }
-
-      .spinner {
-        border: 8px solid rgba(0, 0, 0, 0.1);
-        border-radius: 50%;
-        border-top: 8px solid #3498db;
-        width: 50px;
-        height: 50px;
-        animation: spin 2s linear infinite;
-      }
-
-      @keyframes spin {
-        0% {
-          transform: rotate(0deg);
-        }
-        100% {
-          transform: rotate(360deg);
-        }
-      }
-    </style>
   </head>
-
   <body>
     <nav id="navbar"></nav>
-    <div style="position: relative">
-      <div class="overlay" id="loading_overlay">
-        <div>
-          <div class="spinner"></div>
-        </div>
-      </div>
-      <article class="box m-3 has-background-light">
-        <div class="columns">
-          <div class="column has-text-centered">
-            <canvas
-              style="border-radius: 5px; border: 2px solid black"
-              tabindex="1"
-              id="canvas"
-              aria-label="canvas"
-            ></canvas>
-            <p class="help is-size-6">
-              Click inside the canvas and press "1" or "2" to change camera
-              views.
-            </p>
-          </div>
-          <div class="column">
-            <div class="box">
-              <div class="field has-addons">
-                <div class="control is-expanded">
-                  <input
-                    type="text"
-                    class="input"
-                    id="apiKeyInput"
-                    placeholder="sk-2JuIWy29wFTd..."
-                  />
-                </div>
-                <div class="control">
-                  <button id="api-key-submit" class="button">&#10003;</button>
-                </div>
-              </div>
-              <div class="mt-4">
-                <textarea
-                  class="textarea has-fixed-size"
-                  readonly
-                  id="chatMessages"
-                  rows="10"
-                ></textarea>
-              </div>
-              <div class="mt-4">
-                <div class="field is-grouped">
-                  <div class="control is-expanded">
-                    <textarea
-                      class="textarea has-fixed-size"
-                      id="chatInput"
-                      placeholder="Enter instructions..."
-                      rows="1"
-                      disabled
-                    ></textarea>
-                  </div>
-                  <div class="control">
-                    <button id="chat-submit" class="button" disabled>
-                      &#10148;
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <script src="/lib/util.js"></script>
-        <script src="/lib/vector3f.js"></script>
-        <script src="/lib/matrix3f.js"></script>
-        <script src="/lib/matrix4f.js"></script>
-        <script src="/lib/webgl.js"></script>
-        <script src="/sim/shader.js"></script>
-        <script src="/sim/camera.js"></script>
-        <script>
-          // --- SETUP ENVIRONMENT ---
-          let keys = {};
-          let mouse = { horizontal: 0, vertical: 0 };
-          const canvas = document.getElementById("canvas");
-          const gl = canvas.getContext("webgl", {
-            preserveDrawingBuffer: true,
-          });
-          init3D(gl);
-          resizeCanvas(canvas);
-
-          // --- ADD EVENT LISTENERS ---
-          window.addEventListener("orientationchange", function () {
-            resizeCanvas(canvas);
-          });
-          window.addEventListener("resize", function () {
-            resizeCanvas(canvas);
-          });
-          canvas.addEventListener("mousemove", function (event) {
-            if (document.pointerLockElement === canvas) {
-              mouse["horizontal"] = event.movementX;
-              mouse["vertical"] = event.movementY;
-            }
-          });
-          canvas.addEventListener("click", canvas.requestPointerLock);
-          canvas.addEventListener("keydown", function (event) {
-            keys[event.key] = true;
-          });
-          canvas.addEventListener("keyup", function (event) {
-            keys[event.key] = false;
-          });
-        </script>
-        <script src="/sim/main.js"></script>
-        <script src="/sim/dynamics.js"></script>
-        <script src="/sim/control.js"></script>
-        <script src="/sim/vlm.js"></script>
+    <article class="box m-3 has-background-light">
+      <article class="box has-background-white">
+        <iframe
+          src="aerodynamics.html"
+          style="width: 100%; height: 500px"
+          scrolling="no"
+        ></iframe>
       </article>
-    </div>
-    <div id="footer"></div>
+    </article>
+    <footer id="footer"></footer>
   </body>
 </html>
