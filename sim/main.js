@@ -2,7 +2,7 @@ const urlParams = new URLSearchParams(window.location.search);
 const sceneIndex = urlParams.get("scene") ? parseInt(urlParams.get("scene")) : 0;
 const scene_configurations = [
     {
-        "path": '/sim/data/scene0/scene.obj.gz',
+        "path": '../sim/data/scene0/scene.obj.gz',
         "lights": {
             "res": 2048,
             "num": 3,
@@ -15,7 +15,7 @@ const scene_configurations = [
         "dronemodelmatrix": modelMat4f(-2.0, 1.0, -2.0, 0.0, 0.0, 0.0, 0.01, 0.01, 0.01)
     },
     {
-        "path": '/sim/data/scene1/scene.obj.gz',
+        "path": '../sim/data/scene1/scene.obj.gz',
         "lights": {
             "res": 2048,
             "num": 3,
@@ -89,7 +89,7 @@ let total_collisions = 0;
 
 (async function loadData() {
     document.getElementById('loading_overlay').style.display = 'flex';
-    await loadDrawable('/sim/data/drone.obj', drone_drawable);
+    await loadDrawable('../sim/data/drone.obj', drone_drawable);
     await loadDrawable(activeScene["path"], scene_drawable);
     document.getElementById('loading_overlay').style.display = 'none';
     drawScene();
