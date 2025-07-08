@@ -51,6 +51,17 @@
           transform: rotate(360deg);
         }
       }
+
+      .key-display {
+        display: inline-block;
+        background: #f5f5f5;
+        border: 1px solid #ddd;
+        border-radius: 3px;
+        padding: 2px 6px;
+        font-family: monospace;
+        font-size: 0.9em;
+        margin: 0 2px;
+      }
     </style>
   </head>
 
@@ -71,50 +82,31 @@
               id="canvas"
               aria-label="canvas"
             ></canvas>
-            <p class="help is-size-6">
-              Click inside the canvas and press "1" or "2" to change camera
-              views.
-            </p>
           </div>
           <div class="column">
             <div class="box">
-              <div class="field has-addons">
-                <div class="control is-expanded">
-                  <input
-                    type="text"
-                    class="input"
-                    id="apiKeyInput"
-                    placeholder="sk-2JuIWy29wFTd..."
-                  />
+              <h3 class="title is-5">Flight Controls</h3>
+              
+              <div class="content">
+                <div class="notification is-warning is-light mb-4">
+                  <strong>Getting Started:</strong> Click inside the canvas to capture mouse control, then use the keys below.
                 </div>
-                <div class="control">
-                  <button id="api-key-submit" class="button">&#10003;</button>
+
+                <h4 class="title is-6 mb-3">Camera Controls</h4>
+                <div class="mb-3">
+                  <span class="key-display">1</span> Attach to drone camera<br>
+                  <span class="key-display">2</span> Free camera mode<br>
+                  <span class="key-display">Mouse</span> Look around<br>
+                  <span class="key-display">W</span><span class="key-display">A</span><span class="key-display">S</span><span class="key-display">D</span> Move camera<br>
+                  <span class="key-display">Q</span><span class="key-display">E</span> Up/Down movement
                 </div>
-              </div>
-              <div class="mt-4">
-                <textarea
-                  class="textarea has-fixed-size"
-                  readonly
-                  id="chatMessages"
-                  rows="10"
-                ></textarea>
-              </div>
-              <div class="mt-4">
-                <div class="field is-grouped">
-                  <div class="control is-expanded">
-                    <textarea
-                      class="textarea has-fixed-size"
-                      id="chatInput"
-                      placeholder="Enter instructions..."
-                      rows="1"
-                      disabled
-                    ></textarea>
-                  </div>
-                  <div class="control">
-                    <button id="chat-submit" class="button" disabled>
-                      &#10148;
-                    </button>
-                  </div>
+
+                <h4 class="title is-6 mb-3">Drone Controls</h4>
+                <div class="mb-3">
+                  <span class="key-display">↑</span><span class="key-display">↓</span> Altitude control<br>
+                  <span class="key-display">W</span><span class="key-display">S</span> Pitch forward/backward<br>
+                  <span class="key-display">A</span><span class="key-display">D</span> Roll left/right<br>
+                  <span class="key-display">Q</span><span class="key-display">E</span> Yaw left/right
                 </div>
               </div>
             </div>
@@ -162,7 +154,6 @@
         <script src="../sim/main.js"></script>
         <script src="../sim/dynamics.js"></script>
         <script src="../sim/control.js"></script>
-        <script src="../sim/vlm.js"></script>
       </article>
     </div>
     <div id="footer"></div>
