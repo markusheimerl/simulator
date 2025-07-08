@@ -2,9 +2,9 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <base href="/simulator/control/" />
-    <title>Geometric Control of Co-axial Rotored Drones</title>
-    <link rel="stylesheet" href="../lib/pubcss-ieee.css" />
+    <title>Geometric control of co-axial rotored drones</title>
+    <base href="/simulator/" />
+    <link rel="stylesheet" href="lib/pubcss-ieee.css" />
     <style>
       .katex-display {
         overflow-x: auto;
@@ -45,12 +45,11 @@
   <body>
     <header class="col-span">
       <h1 class="title counter-skip">
-        Geometric Control of Co-axial Rotored Drones
+        Geometric control of co-axial rotored drones
       </h1>
       <div class="authors">
         <div class="author">
           <div>Markus Heimerl</div>
-          <div>Flight Simulator</div>
           <div>Regensburg, Germany</div>
           <div>contact@markusheimerl.com</div>
         </div>
@@ -59,257 +58,270 @@
 
     <div class="abstract">
       <p>
-        <em>Abstract</em> — The control of co-axial rotored drones presents
-        unique challenges due to their complex dynamics and nonlinear nature. In
-        this paper, we present a geometric control approach for co-axial drones,
-        leveraging the drone's spatial dynamics and state representation
-        introduced in our previous work. The proposed controller design aims to
-        achieve precise trajectory tracking and robust performance in the
-        presence of disturbances. We formulate the control problem in the
-        geometric framework, utilizing the drone's configuration manifold and
-        associated tangent spaces. The control law is derived using Lyapunov
-        stability analysis, ensuring asymptotic convergence of the tracking
-        errors. The controller structure is composed of a cascaded architecture,
-        with an outer loop for position control and an inner loop for attitude
-        control. The control inputs are mapped to the rotor speeds using the
-        drone's actuation matrix, taking into account the thrust and moment
-        generation of the co-axial rotors. Simulation results demonstrate the
-        effectiveness of the proposed geometric controller in tracking desired
-        trajectories and rejecting disturbances. The controller exhibits
-        excellent tracking performance and robustness, even in the presence of
-        model uncertainties and external perturbations. The geometric control
-        approach provides a principled and intuitive framework for the control
-        of co-axial drones, enabling agile and precise maneuvering in complex
-        environments. This work contributes to the advancement of autonomous
-        aerial robotics and opens up new possibilities for the deployment of
-        co-axial drones in various applications, such as inspection,
-        surveillance, and transportation.
+        <em>Abstract</em> - This paper presents a geometric control approach for co-axial drone 
+        trajectory tracking. The controller employs a cascaded structure with position and 
+        attitude loops, utilizing feedback linearization and proportional-derivative control laws. 
+        The control allocation problem is solved through the inverse actuation matrix, mapping 
+        desired forces and moments to individual rotor speeds. The formulation provides stability 
+        guarantees and enables precise tracking of desired trajectories in three-dimensional space.
       </p>
       <p>
-        <em>Keywords</em> — Co-axial drones, geometric control, nonlinear
-        control, Lyapunov stability, trajectory tracking, robust control
+        <em>Keywords</em> - Geometric control, co-axial drones, trajectory tracking, feedback linearization
       </p>
     </div>
 
     <h1>Introduction</h1>
     <section>
       <p>
-        The control of co-axial rotored drones is a challenging problem due to
-        their inherent nonlinearities and underactuation. Traditional control
-        approaches often struggle to achieve precise trajectory tracking and
-        robust performance in the presence of disturbances. In this paper, we
-        propose a geometric control approach that leverages the drone's spatial
-        dynamics and state representation to design a controller that achieves
-        excellent tracking performance and robustness. The geometric control
-        framework provides a principled and intuitive way to handle the
-        nonlinearities and coupling in the drone's dynamics, enabling agile and
-        precise maneuvering in complex environments.
+        The control of co-axial drones requires addressing the inherent coupling between translational 
+        and rotational dynamics. This paper develops a geometric control framework that leverages the 
+        drone's configuration manifold structure to achieve precise trajectory tracking. The controller 
+        design separates the position and attitude control problems through feedback linearization, 
+        enabling independent tuning of translational and rotational responses.
       </p>
     </section>
 
-    <h1>Control Design</h1>
+    <h1>Control Architecture</h1>
     <section>
-      <h2>Problem Formulation</h2>
+      <h2>Position Control</h2>
       <p>
-        The control objective is to design a feedback control law that enables
-        the co-axial drone to track a desired trajectory while rejecting
-        disturbances. Let \(\mathbf{p}^d_W(t)\), \(\mathbf{v}^d_W(t)\),
-        \(\mathbf{a}^d_W(t)\) denote the desired position, velocity, and
-        acceleration in the world frame, and \(\boldsymbol{\omega}^d_B(t)\),
-        \(\dot{\boldsymbol{\omega}}^d_B(t)\) denote the desired angular velocity
-        and acceleration in the body frame. The control problem is formulated as
-        the minimization of the tracking errors:
+        The position control loop generates a desired thrust direction based on position and velocity 
+        tracking errors. The control law employs proportional-derivative feedback with gravity and 
+        feedforward compensation.
+      </p>
+      <p>
+        Define the position error (\(\mathbf{e}_p\)) and velocity error (\(\mathbf{e}_v\)) as:
       </p>
       <!-- prettier-ignore -->
       <div class="equation">
         \[
-          \mathbf{e}_p(t) = \mathbf{p}_W(t) - \mathbf{p}^d_W(t)
+          \mathbf{e}_p = \mathbf{p}_W - \mathbf{p}^d_W, \qquad
+          \mathbf{e}_v = \mathbf{v}_W - \mathbf{v}^d_W
         \]
-        \[  
-          \mathbf{e}_v(t) = \mathbf{v}_W(t) - \mathbf{v}^d_W(t)
-        \]
+      </div>
+      <p>
+        The desired thrust direction (\(\mathbf{z}^d_W\)) in the world frame is computed as:
+      </p>
+      <!-- prettier-ignore -->
+      <div class="equation">
         \[
-          \mathbf{e}_R(t) = \frac{1}{2}\left(\mathbf{R}^{dT}_W(t)\mathbf{R}^B_W(t) - \mathbf{R}^{BT}_W(t)\mathbf{R}^d_W(t)\right)^\vee
+          \mathbf{z}^d_W = -k_p \mathbf{e}_p - k_v \mathbf{e}_v + 
+          \begin{bmatrix}
+            0 \\
+            mg \\
+            0
+          \end{bmatrix} + m\mathbf{a}^d_W
         \]
+      </div>
+      <p>
+        where \(k_p\) and \(k_v\) are positive control gains, and \(\mathbf{a}^d_W\) is the 
+        desired acceleration. The thrust magnitude is obtained by projecting the desired thrust 
+        onto the current body z-axis:
+      </p>
+      <!-- prettier-ignore -->
+      <div class="equation">
         \[
-          \mathbf{e}_\omega(t) = \boldsymbol{\omega}_B(t) - \mathbf{R}^{BT}_W(t)\mathbf{R}^d_W(t)\boldsymbol{\omega}^d_B(t)
+          f_z = \mathbf{z}^d_W \cdot \mathbf{z}_B = \mathbf{z}^d_W \cdot \mathbf{R}^B_W 
+          \begin{bmatrix}
+            0 \\
+            1 \\
+            0
+          \end{bmatrix}
         \]
       </div>
 
-      <h2>Control Law</h2>
+      <h2>Attitude Control</h2>
       <p>
-        The proposed geometric controller consists of an outer loop for position
-        control and an inner loop for attitude control. The control law is
-        derived using Lyapunov stability analysis, ensuring asymptotic
-        convergence of the tracking errors.
+        The attitude control loop computes the desired orientation matrix based on the thrust 
+        direction and desired yaw angle. The desired body frame is constructed using the 
+        desired thrust direction and yaw reference.
       </p>
+      <p>
+        Given the desired yaw angle (\(\psi^d\)), the desired body frame vectors are:
+      </p>
+      <!-- prettier-ignore -->
+      <div class="equation">
+        \[
+          \tilde{\mathbf{x}}^d_W = 
+          \begin{bmatrix}
+            \sin \psi^d \\
+            0 \\
+            \cos \psi^d
+          \end{bmatrix}
+        \]
+      </div>
+      <p>
+        The desired rotation matrix (\(\mathbf{R}^d_W\)) is constructed as:
+      </p>
+      <!-- prettier-ignore -->
+      <div class="equation">
+        \[
+          \mathbf{y}^d_W = \frac{(\mathbf{z}^d_W \times \tilde{\mathbf{x}}^d_W) \times \mathbf{z}^d_W}{\|(\mathbf{z}^d_W \times \tilde{\mathbf{x}}^d_W) \times \mathbf{z}^d_W\|}
+        \]
+        \[
+          \mathbf{z}^d_W = \frac{\mathbf{z}^d_W}{\|\mathbf{z}^d_W\|}
+        \]
+        \[
+          \mathbf{x}^d_W = \frac{\mathbf{z}^d_W \times \tilde{\mathbf{x}}^d_W}{\|\mathbf{z}^d_W \times \tilde{\mathbf{x}}^d_W\|}
+        \]
+      </div>
+      <p>
+        The desired rotation matrix is then:
+      </p>
+      <!-- prettier-ignore -->
+      <div class="equation">
+        \[
+          \mathbf{R}^d_W = \begin{bmatrix} \mathbf{x}^d_W & \mathbf{y}^d_W & \mathbf{z}^d_W \end{bmatrix}
+        \]
+      </div>
 
-      <h3>Position Control</h3>
+      <h2>Attitude Error Dynamics</h2>
       <p>
-        The desired force in the world frame, \(\mathbf{f}^d_W\), is computed
-        based on the position and velocity errors:
+        The attitude error is defined using the logarithmic map on the rotation group. The 
+        rotation error (\(\mathbf{e}_R\)) and angular velocity error (\(\mathbf{e}_\omega\)) are:
       </p>
       <!-- prettier-ignore -->
       <div class="equation">
         \[
-          \mathbf{f}^d_W = -k_p\mathbf{e}_p - k_v\mathbf{e}_v + m\mathbf{g} + m\mathbf{a}^d_W
+          \mathbf{e}_R = \frac{1}{2} \left( (\mathbf{R}^d_W)^T \mathbf{R}^B_W - (\mathbf{R}^B_W)^T \mathbf{R}^d_W \right)^\vee
+        \]
+        \[
+          \mathbf{e}_\omega = \boldsymbol{\omega}_B - (\mathbf{R}^d_W)^T \mathbf{R}^B_W \boldsymbol{\omega}^d_B
         \]
       </div>
       <p>
-        where \(k_p\) and \(k_v\) are positive gains, \(m\) is the drone's mass,
-        and \(\mathbf{g}\) is the gravitational acceleration vector.
-      </p>
-
-      <h3>Attitude Control</h3>
-      <p>
-        The desired orientation, \(\mathbf{R}^d_W\), is computed based on the
-        desired force and a desired yaw angle, \(\psi^d\):
+        The desired control torque (\(\boldsymbol{\tau}^d_B\)) is computed using proportional-derivative 
+        feedback with gyroscopic compensation:
       </p>
       <!-- prettier-ignore -->
       <div class="equation">
         \[
-          \mathbf{x}^d_W = \begin{bmatrix} \cos\psi^d & 0 & \sin\psi^d \end{bmatrix}^T
-        \qquad
-          \mathbf{y}^d_W = \frac{\mathbf{f}^d_W \times \mathbf{x}^d_W}{\|\mathbf{f}^d_W \times \mathbf{x}^d_W\|}
-        \]
-        \[  
-          \mathbf{z}^d_W = \frac{\mathbf{f}^d_W}{\|\mathbf{f}^d_W\|}
-          \qquad
-          \mathbf{R}^d_W = \begin{bmatrix} \mathbf{y}^d_W & \mathbf{z}^d_W & \mathbf{x}^d_W \end{bmatrix}
+          \boldsymbol{\tau}^d_B = -k_R \mathbf{e}_R - k_\omega \mathbf{e}_\omega + \boldsymbol{\omega}_B \times \mathbf{I} \boldsymbol{\omega}_B - \mathbf{I} \left( \boldsymbol{\alpha}_0 - \boldsymbol{\alpha}_1 \right)
         \]
       </div>
       <p>
-        The desired control torque in the body frame, \(\boldsymbol{\tau}^d_B\),
-        is computed based on the attitude and angular velocity errors:
+        where \(k_R\) and \(k_\omega\) are positive control gains, and:
       </p>
       <!-- prettier-ignore -->
       <div class="equation">
         \[
-          \boldsymbol{\tau}^d_B = -k_R\mathbf{e}_R - k_\omega\mathbf{e}_\omega + \boldsymbol{\omega}_B \times \mathbf{I}\boldsymbol{\omega}_B - \mathbf{I}\left(\mathbf{R}^{BT}_W\mathbf{R}^d_W\dot{\boldsymbol{\omega}}^d_B - \boldsymbol{\omega}_B \times \mathbf{R}^{BT}_W\mathbf{R}^d_W\boldsymbol{\omega}^d_B\right)
+          \boldsymbol{\alpha}_0 = (\mathbf{R}^B_W)^T \mathbf{R}^d_W \boldsymbol{\omega}^d_B
         \]
-      </div>
-      <p>
-        where \(k_R\) and \(k_\omega\) are positive gains, and \(\mathbf{I}\) is
-        the drone's inertia matrix.
-      </p>
-
-      <h2>Rotor Speed Mapping</h2>
-      <p>
-        The control inputs, \(f^d_B\) and \(\boldsymbol{\tau}^d_B\), are mapped
-        to the rotor speeds, \(\omega_i\), using the drone's actuation matrix,
-        \(\mathbf{F}\):
-      </p>
-      <!-- prettier-ignore -->
-      <div class="equation">
         \[
-          \begin{bmatrix} f^d_B \\ \boldsymbol{\tau}^d_B \end{bmatrix} = \mathbf{F} \begin{bmatrix} \omega^2_1 \\ \omega^2_2 \\ \omega^2_3 \\ \omega^2_4 \end{bmatrix}
+          \boldsymbol{\alpha}_1 = \boldsymbol{\omega}_B \times (\mathbf{R}^B_W)^T \mathbf{R}^d_W \boldsymbol{\omega}^d_B
         \]
       </div>
-      <p>
-        The actuation matrix, \(\mathbf{F}\), is derived based on the thrust and
-        moment generation of the co-axial rotors, considering the rotor
-        configuration and aerodynamic coefficients.
-      </p>
     </section>
 
-    <h1>Simulation Results</h1>
+    <h1>Control Allocation</h1>
     <section>
+      <h2>Actuation Matrix</h2>
       <p>
-        The proposed geometric controller is implemented and tested in
-        simulation using the co-axial drone model developed in our previous
-        work. The simulation results demonstrate the effectiveness of the
-        controller in tracking desired trajectories and rejecting disturbances.
+        The control allocation problem maps the desired thrust and torque to individual rotor 
+        speeds. The actuation matrix (\(\bar{\mathbf{F}}\)) relates the squared rotor speeds 
+        to the control inputs:
       </p>
-      <!--
-      <figure>
-        <div style="border: 1px solid #000; margin-top: 6px; overflow: hidden">
-          <img
-            src="trajectory_tracking.png"
-            alt="Trajectory tracking performance of the geometric controller"
-            style="
-              max-width: 100%;
-              max-height: 100%;
-              display: block;
-              margin: auto;
-            "
-          />
-        </div>
-        <figcaption>
-          Trajectory tracking performance of the geometric controller
-        </figcaption>
-      </figure>
--->
+      <!-- prettier-ignore -->
+      <div class="equation">
+        \[
+          \begin{bmatrix}
+            f_z \\
+            \tau_x \\
+            \tau_y \\
+            \tau_z
+          \end{bmatrix} = \bar{\mathbf{F}}
+          \begin{bmatrix}
+            \omega_1^2 \\
+            \omega_2^2 \\
+            \omega_3^2 \\
+            \omega_4^2
+          \end{bmatrix}
+        \]
+      </div>
       <p>
-        The controller exhibits excellent tracking performance, closely
-        following the desired position and orientation trajectories. The
-        tracking errors converge to zero asymptotically, indicating the
-        stability and convergence properties of the control law.
+        The actuation matrix is constructed based on the rotor positions and moment coefficients:
       </p>
-      <!--
-      <figure>
-        <div style="border: 1px solid #000; margin-top: 6px; overflow: hidden">
-          <img
-            src="disturbance_rejection.png"
-            alt="Disturbance rejection performance of the geometric controller"
-            style="
-              max-width: 100%;
-              max-height: 100%;
-              display: block;
-              margin: auto;
-            "
-          />
-        </div>
-        <figcaption>
-          Disturbance rejection performance of the geometric controller
-        </figcaption>
-      </figure>
--->
+      <!-- prettier-ignore -->
+      <div class="equation">
+        \[
+          \bar{\mathbf{F}} = \begin{bmatrix}
+            k_f & k_f & k_f & k_f \\
+            \bar{F}_{1x} & \bar{F}_{2x} & \bar{F}_{3x} & \bar{F}_{4x} \\
+            \bar{F}_{1y} & \bar{F}_{2y} & \bar{F}_{3y} & \bar{F}_{4y} \\
+            \bar{F}_{1z} & \bar{F}_{2z} & \bar{F}_{3z} & \bar{F}_{4z}
+          \end{bmatrix}
+        \]
+      </div>
       <p>
-        The controller also demonstrates robust performance in the presence of
-        disturbances. When subjected to external perturbations, the controller
-        effectively rejects the disturbances and maintains stable tracking of
-        the desired trajectory.
+        where each column (\(\bar{\mathbf{F}}_i\)) represents the contribution of rotor \(i\) to 
+        the total force and moment:
       </p>
-    </section>
+      <!-- prettier-ignore -->
+      <div class="equation">
+        \[
+          \bar{\mathbf{F}}_i = \begin{bmatrix} 0 \\ \pm k_m \\ 0 \end{bmatrix} + k_f \mathbf{r}_i \times \begin{bmatrix} 0 \\ 1 \\ 0 \end{bmatrix}
+        \]
+      </div>
 
-    <h1>Conclusion</h1>
-    <section>
+      <h2>Rotor Speed Computation</h2>
       <p>
-        In this paper, we presented a geometric control approach for co-axial
-        rotored drones. The proposed controller leverages the drone's spatial
-        dynamics and state representation to achieve precise trajectory tracking
-        and robust performance. The control law is derived using Lyapunov
-        stability analysis, ensuring asymptotic convergence of the tracking
-        errors. Simulation results demonstrate the effectiveness of the
-        geometric controller in tracking desired trajectories and rejecting
-        disturbances. The controller exhibits excellent tracking performance and
-        robustness, even in the presence of model uncertainties and external
-        perturbations. This work contributes to the advancement of autonomous
-        aerial robotics and opens up new possibilities for the deployment of
-        co-axial drones in various applications.
+        The desired rotor speeds are obtained by inverting the actuation matrix:
       </p>
+      <!-- prettier-ignore -->
+      <div class="equation">
+        \[
+          \begin{bmatrix}
+            \omega_1^2 \\
+            \omega_2^2 \\
+            \omega_3^2 \\
+            \omega_4^2
+          \end{bmatrix} = \bar{\mathbf{F}}^{-1}
+          \begin{bmatrix}
+            f_z \\
+            \tau_x \\
+            \tau_y \\
+            \tau_z
+          \end{bmatrix}
+        \]
+      </div>
+      <p>
+        The individual rotor speeds are then:
+      </p>
+      <!-- prettier-ignore -->
+      <div class="equation">
+        \[
+          \omega_i = \sqrt{|\omega_i^2|}, \quad i = 1, 2, 3, 4
+        \]
+      </div>
+      <p>
+        The rotor speeds are constrained within operational limits:
+      </p>
+      <!-- prettier-ignore -->
+      <div class="equation">
+        \[
+          \omega_{\text{min}} \leq \omega_i \leq \omega_{\text{max}}
+        \]
+      </div>
     </section>
 
     <h5 class="references">References</h5>
     <div class="references">
-      <cite id="lee2010">
-        <a href="https://ieeexplore.ieee.org/document/5717652">
-          Lee, T., Leok, M., & McClamroch, N. H. (2010). Geometric tracking
-          control of a quadrotor UAV on SE(3). In 49th IEEE conference on
-          decision and control (CDC) (pp. 5420-5425). IEEE.
+      <cite id="euler1768">
+        <a
+          href="https://archive.org/details/leonhardieuleri05eulegoog/page/n6/mode/2up?view=theater"
+          >Euler, L. (1770). Institutiones calculi integralis</a
+        >
+      </cite>
+      <cite id="newton1687">
+        <a
+          href="https://archive.org/details/philosophiaenatu00newt_0/page/n9/mode/2up?view=theater"
+          >Newton, I. (1687). Philosopsiæ Naturalis Principia Mathematica
         </a>
       </cite>
-      <cite id="mellinger2011">
-        <a href="https://ieeexplore.ieee.org/document/5980409">
-          Mellinger, D., & Kumar, V. (2011). Minimum snap trajectory generation
-          and control for quadrotors. In 2011 IEEE international conference on
-          robotics and automation (pp. 2520-2525). IEEE.
-        </a>
-      </cite>
-      <cite id="heimerl2023">
-        <a>
-          Heimerl, M. (2023). A formalization of co-axial rotored aerodynamics.
-          Flight Simulator.
+      <cite id="archimedes250bc">
+        <a
+          href="https://archive.org/details/worksofarchimede00arch/page/n15/mode/2up?view=theater"
+          >Archimedes (ca. 250 BC). Περὶ ἐπιπέδων ἰσορροπιῶν
         </a>
       </cite>
     </div>
