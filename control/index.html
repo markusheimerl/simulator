@@ -14,8 +14,8 @@
     <script src="/lib/util.js"></script>
     <script>
       document.addEventListener("DOMContentLoaded", function () {
-        loadExternalHTML("../lib/navbar.html", "navbar");
-        loadExternalHTML("../lib/footer.html", "footer");
+        loadExternalHTML("/lib/navbar.html", "navbar");
+        loadExternalHTML("/lib/footer.html", "footer");
       });
 
       ["load", "resize"].forEach(function (event) {
@@ -37,7 +37,7 @@
     <article class="box m-3 has-background-light">
       <article class="box has-background-white">
         <iframe
-          src="control/control.html"
+          src="/control/control.html"
           style="width: 100%; height: 500px"
           scrolling="no"
         ></iframe>
