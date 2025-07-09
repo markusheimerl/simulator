@@ -1,2 +1,2 @@
-# simulator
-A drone simulator
+# wsim
+A web quadcoptor simulation
