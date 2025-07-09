@@ -2,7 +2,6 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <base href="/simulator/control/" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="Description" content="Flight Simulator" />
     <link
@@ -10,9 +9,9 @@
       href="https://avatars.githubusercontent.com/u/151067388"
       type="image/png"
     />
-    <link rel="stylesheet" href="../lib/bulma.min.css" />
+    <link rel="stylesheet" href="/lib/bulma.min.css" />
     <title>Flight Simulator</title>
-    <script src="../lib/util.js"></script>
+    <script src="/lib/util.js"></script>
     <script>
       document.addEventListener("DOMContentLoaded", function () {
         loadExternalHTML("../lib/navbar.html", "navbar");
@@ -38,7 +37,7 @@
     <article class="box m-3 has-background-light">
       <article class="box has-background-white">
         <iframe
-          src="./control.html"
+          src="control/control.html"
           style="width: 100%; height: 500px"
           scrolling="no"
         ></iframe>
