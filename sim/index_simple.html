@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="Description" content="Flight Simulator - Clean Simple Version" />
+    <link
+      rel="icon"
+      href="https://avatars.githubusercontent.com/u/151067388"
+      type="image/png"
+    />
+    <link rel="stylesheet" href="/lib/bulma.min.css" />
+    <title>wsim | A web quadcoptor simulation - Simple Clean Version</title>
+    <script src="/lib/util.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        loadExternalHTML("/lib/navbar.html", "navbar");
+        loadExternalHTML("/lib/footer.html", "footer");
+      });
+    </script>
+    <style>
+      .overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(255, 255, 255, 0.8);
+        display: none;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        z-index: 10;
+      }
+
+      .spinner {
+        border: 8px solid rgba(0, 0, 0, 0.1);
+        border-radius: 50%;
+        border-top: 8px solid #3498db;
+        width: 50px;
+        height: 50px;
+        animation: spin 2s linear infinite;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      .key-display {
+        display: inline-block;
+        background: #f5f5f5;
+        border: 1px solid #ddd;
+        border-radius: 3px;
+        padding: 2px 6px;
+        font-family: monospace;
+        font-size: 0.9em;
+        margin: 0 2px;
+      }
+
+      .feature-highlight {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 1rem;
+        border-radius: 8px;
+        margin-bottom: 1rem;
+      }
+    </style>
+  </head>
+
+  <body>
+    <nav id="navbar"></nav>
+    <div style="position: relative">
+      <div class="overlay" id="loading_overlay">
+        <div>
+          <div class="spinner"></div>
+          <p>Loading clean, simple simulation...</p>
+        </div>
+      </div>
+      <article class="box m-3 has-background-light">
+        <div class="feature-highlight">
+          <h2 class="title is-4 has-text-white">✨ Clean Simple Renderer</h2>
+          <p>This version uses procedural geometry and simplified shaders for better performance and visual clarity. No more complex OBJ/MTL parsing!</p>
+        </div>
+        
+        <div class="columns">
+          <div class="column has-text-centered">
+            <canvas
+              style="border-radius: 5px; border: 2px solid black"
+              tabindex="1"
+              id="canvas"
+              aria-label="canvas"
+            ></canvas>
+          </div>
+          <div class="column">
+            <div class="box">
+              <h3 class="title is-5">Flight Controls</h3>
+              
+              <div class="content">
+                <div class="notification is-info is-light mb-4">
+                  <strong>Improved Graphics:</strong> This version features clean procedural geometry, simplified lighting, and better performance.
+                </div>
+
+                <h4 class="title is-6 mb-3">Camera Controls</h4>
+                <div class="mb-3">
+                  <span class="key-display">1</span> Attach to drone camera<br>
+                  <span class="key-display">2</span> Free camera mode<br>
+                  <span class="key-display">Mouse</span> Look around<br>
+                  <span class="key-display">W</span><span class="key-display">A</span><span class="key-display">S</span><span class="key-display">D</span> Move camera<br>
+                  <span class="key-display">Q</span><span class="key-display">E</span> Up/Down movement
+                </div>
+
+                <h4 class="title is-6 mb-3">Drone Controls</h4>
+                <div class="mb-3">
+                  <span class="key-display">↑</span><span class="key-display">↓</span> Altitude control<br>
+                  <span class="key-display">W</span><span class="key-display">S</span> Pitch forward/backward<br>
+                  <span class="key-display">A</span><span class="key-display">D</span> Roll left/right<br>
+                  <span class="key-display">Q</span><span class="key-display">E</span> Yaw left/right
+                </div>
+                
+                <div class="notification is-success is-light">
+                  <strong>Performance Benefits:</strong>
+                  <ul>
+                    <li>No complex texture loading</li>
+                    <li>Simplified shader calculations</li>
+                    <li>Procedural geometry generation</li>
+                    <li>Clean, modern visual style</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Load required libraries -->
+        <script src="/lib/util.js"></script>
+        <script src="/lib/vector3f.js"></script>
+        <script src="/lib/matrix3f.js"></script>
+        <script src="/lib/matrix4f.js"></script>
+        <script src="/lib/webgl.js"></script>
+        <script src="/sim/simple_renderer.js"></script>
+        <script src="/sim/camera.js"></script>
+        
+        <script>
+          // --- SETUP ENVIRONMENT ---
+          let keys = {};
+          let mouse = { horizontal: 0, vertical: 0 };
+          const canvas = document.getElementById("canvas");
+          const gl = canvas.getContext("webgl", {
+            preserveDrawingBuffer: true,
+          });
+          init3D(gl);
+          resizeCanvas(canvas);
+
+          // --- ADD EVENT LISTENERS ---
+          window.addEventListener("orientationchange", function () {
+            resizeCanvas(canvas);
+          });
+          window.addEventListener("resize", function () {
+            resizeCanvas(canvas);
+          });
+          canvas.addEventListener("mousemove", function (event) {
+            if (document.pointerLockElement === canvas) {
+              mouse["horizontal"] = event.movementX;
+              mouse["vertical"] = event.movementY;
+            }
+          });
+          canvas.addEventListener("click", canvas.requestPointerLock);
+          canvas.addEventListener("keydown", function (event) {
+            keys[event.key] = true;
+          });
+          canvas.addEventListener("keyup", function (event) {
+            keys[event.key] = false;
+          });
+        </script>
+        
+        <!-- Load the simplified main script -->
+        <script src="/sim/main_simple.js"></script>
+        <!-- Note: dynamics.js and control.js will be loaded after scene initialization -->
+      </article>
+    </div>
+    <div id="footer"></div>
+  </body>
+</html>
