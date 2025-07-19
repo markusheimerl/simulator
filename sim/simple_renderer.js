@@ -229,33 +229,36 @@ function drawSimpleDrawable(gl, drawable, attribLocations) {
 function createSimpleScene() {
     const scene = {
         drawables: [],
-        lightPos: [5, 10, 5],
-        lightColor: [1.0, 1.0, 0.9],
-        ambientStrength: 0.3,
-        diffuseStrength: 0.8,
-        specularStrength: 0.5
+        lightPos: [8, 12, 8],
+        lightColor: [1.0, 0.95, 0.8],
+        ambientStrength: 0.4,
+        diffuseStrength: 0.9,
+        specularStrength: 0.6
     };
     
-    // Create floor
-    const floorGeometry = createFloor(20, [0.8, 0.8, 0.9]);
+    // Create floor with a nice blue-gray color
+    const floorGeometry = createFloor(25, [0.7, 0.8, 0.9]);
     scene.drawables.push(createSimpleDrawable(floorGeometry, modelMat4f(0, -1, 0, 0, 0, 0, 1, 1, 1)));
     
-    // Create some walls
-    const wallGeometry = createCube(0.2, [0.9, 0.9, 0.95]);
-    scene.drawables.push(createSimpleDrawable(wallGeometry, modelMat4f(-10, 5, 0, 0, 0, 0, 1, 25, 1)));
-    scene.drawables.push(createSimpleDrawable(wallGeometry, modelMat4f(10, 5, 0, 0, 0, 0, 1, 25, 1)));
-    scene.drawables.push(createSimpleDrawable(wallGeometry, modelMat4f(0, 5, -10, 0, 0, 0, 25, 25, 1)));
+    // Create some walls with modern colors
+    const wallGeometry = createCube(0.3, [0.85, 0.87, 0.9]);
+    scene.drawables.push(createSimpleDrawable(wallGeometry, modelMat4f(-12, 5, 0, 0, 0, 0, 1, 25, 1)));
+    scene.drawables.push(createSimpleDrawable(wallGeometry, modelMat4f(12, 5, 0, 0, 0, 0, 1, 25, 1)));
+    scene.drawables.push(createSimpleDrawable(wallGeometry, modelMat4f(0, 5, -12, 0, 0, 0, 25, 25, 1)));
     
-    // Create some furniture/obstacles
+    // Create colorful furniture/obstacles with modern color palette
     const furnitureColors = [
-        [0.6, 0.3, 0.2], // Brown
-        [0.2, 0.6, 0.3], // Green
-        [0.3, 0.3, 0.8], // Blue
-        [0.8, 0.6, 0.2]  // Orange
+        [0.8, 0.4, 0.3], // Coral red
+        [0.3, 0.7, 0.5], // Mint green  
+        [0.4, 0.5, 0.8], // Soft blue
+        [0.9, 0.7, 0.3], // Golden yellow
+        [0.7, 0.3, 0.7], // Purple
+        [0.3, 0.8, 0.8]  // Cyan
     ];
     
     const positions = [
-        [-5, 0.5, -5], [5, 0.5, -5], [-5, 0.5, 5], [3, 1.5, 2]
+        [-6, 0.8, -6], [6, 0.8, -6], [-6, 0.8, 6], 
+        [4, 1.5, 3], [-3, 1.0, 4], [8, 0.6, -3]
     ];
     
     for (let i = 0; i < positions.length; i++) {
@@ -263,10 +266,12 @@ function createSimpleScene() {
         scene.drawables.push(createSimpleDrawable(cubeGeometry, modelMat4f(...positions[i], 0, 0, 0, 1, 1, 1)));
     }
     
-    // Add some spherical decorations
-    const sphereGeometry = createSphere(0.5, 12, [0.9, 0.7, 0.3]);
-    scene.drawables.push(createSimpleDrawable(sphereGeometry, modelMat4f(-2, 2, -2, 0, 0, 0, 1, 1, 1)));
-    scene.drawables.push(createSimpleDrawable(sphereGeometry, modelMat4f(7, 3, 7, 0, 0, 0, 1, 1, 1)));
+    // Add some spherical decorations with metallic colors
+    const sphereGeometry1 = createSphere(0.7, 16, [0.9, 0.8, 0.4]); // Gold
+    scene.drawables.push(createSimpleDrawable(sphereGeometry1, modelMat4f(-3, 2.5, -3, 0, 0, 0, 1, 1, 1)));
+    
+    const sphereGeometry2 = createSphere(0.5, 16, [0.7, 0.7, 0.8]); // Silver
+    scene.drawables.push(createSimpleDrawable(sphereGeometry2, modelMat4f(7, 3, 7, 0, 0, 0, 1, 1, 1)));
     
     return scene;
 }

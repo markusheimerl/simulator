@@ -1,2 +1,203 @@
-<meta http-equiv="refresh" content="0; url=/dynamics">
-<script>window.location.href = "/dynamics";</script>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="Description" content="Flight Simulator - Choose Your Experience" />
+    <link rel="stylesheet" href="/lib/bulma.min.css" />
+    <title>wsim | A web quadcoptor simulation</title>
+    <script src="/lib/util.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        loadExternalHTML("/lib/navbar.html", "navbar");
+        loadExternalHTML("/lib/footer.html", "footer");
+      });
+    </script>
+    <style>
+      .hero-gradient {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      }
+      
+      .version-cards {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+        margin: 3rem 0;
+      }
+      
+      .version-card {
+        border-radius: 12px;
+        padding: 2rem;
+        text-align: center;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        transition: transform 0.3s ease;
+      }
+      
+      .version-card:hover {
+        transform: translateY(-5px);
+      }
+      
+      .card-new {
+        background: linear-gradient(135deg, #51cf66 0%, #40c057 100%);
+        color: white;
+      }
+      
+      .card-old {
+        background: linear-gradient(135deg, #868e96 0%, #6c757d 100%);
+        color: white;
+      }
+      
+      .card-comparison {
+        background: linear-gradient(135deg, #339af0 0%, #228be6 100%);
+        color: white;
+      }
+      
+      @media (max-width: 768px) {
+        .version-cards {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <nav id="navbar"></nav>
+    
+    <!-- Hero Section -->
+    <section class="hero is-large hero-gradient">
+      <div class="hero-body">
+        <div class="container has-text-centered">
+          <h1 class="title is-1 has-text-white">
+            🚁 wsim
+          </h1>
+          <h2 class="subtitle is-3 has-text-white">
+            A web quadcoptor simulation
+          </h2>
+          <p class="is-size-5 has-text-white mb-5">
+            Experience drone flight simulation with our new improved renderer
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Main Content -->
+    <section class="section">
+      <div class="container">
+        <div class="has-text-centered mb-6">
+          <h2 class="title is-2">Choose Your Experience</h2>
+          <p class="subtitle">We've completely reimagined the rendering system for better visuals and performance</p>
+        </div>
+
+        <div class="version-cards">
+          <!-- New Recommended Version -->
+          <div class="version-card card-new">
+            <div class="mb-4">
+              <span class="icon is-large">
+                <i class="fas fa-rocket fa-3x"></i>
+              </span>
+            </div>
+            <h3 class="title is-3 has-text-white">✨ New Simple Renderer</h3>
+            <p class="subtitle is-5 has-text-white">Recommended Experience</p>
+            <p class="mb-4">
+              Beautiful procedural geometry, clean modern design, and excellent performance. 
+              No more complex asset nightmares!
+            </p>
+            <div class="buttons is-centered">
+              <a href="/sim/index_simple.html" class="button is-light is-large">
+                <span class="icon">
+                  <i class="fas fa-play"></i>
+                </span>
+                <span>Start Flying</span>
+              </a>
+            </div>
+            <div class="tags is-centered mt-3">
+              <span class="tag is-light">Fast Loading</span>
+              <span class="tag is-light">Beautiful</span>
+              <span class="tag is-light">Easy to Use</span>
+            </div>
+          </div>
+
+          <!-- Original Version -->
+          <div class="version-card card-old">
+            <div class="mb-4">
+              <span class="icon is-large">
+                <i class="fas fa-cog fa-3x"></i>
+              </span>
+            </div>
+            <h3 class="title is-3 has-text-white">⚙️ Original Complex Renderer</h3>
+            <p class="subtitle is-5 has-text-white">Legacy Version</p>
+            <p class="mb-4">
+              The original system with OBJ/MTL files and complex shaders. 
+              Still functional but much more difficult to work with.
+            </p>
+            <div class="buttons is-centered">
+              <a href="/sim/" class="button is-light">
+                <span class="icon">
+                  <i class="fas fa-wrench"></i>
+                </span>
+                <span>View Original</span>
+              </a>
+            </div>
+            <div class="tags is-centered mt-3">
+              <span class="tag is-light">Complex</span>
+              <span class="tag is-light">Slow Loading</span>
+              <span class="tag is-light">Legacy</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Comparison Link -->
+        <div class="has-text-centered mt-6">
+          <div class="version-card card-comparison" style="max-width: 500px; margin: 0 auto;">
+            <h3 class="title is-4 has-text-white">🔄 Compare Versions</h3>
+            <p class="mb-4">
+              See the technical differences and improvements side by side
+            </p>
+            <a href="/comparison.html" class="button is-light">
+              <span class="icon">
+                <i class="fas fa-balance-scale"></i>
+              </span>
+              <span>View Comparison</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Features Section -->
+        <div class="box mt-6">
+          <h3 class="title is-3 has-text-centered">🎯 Key Improvements</h3>
+          <div class="columns">
+            <div class="column">
+              <div class="has-text-centered">
+                <span class="icon is-large has-text-success">
+                  <i class="fas fa-tachometer-alt fa-2x"></i>
+                </span>
+                <h4 class="title is-5">Better Performance</h4>
+                <p>Faster loading, smoother rendering, lower memory usage</p>
+              </div>
+            </div>
+            <div class="column">
+              <div class="has-text-centered">
+                <span class="icon is-large has-text-info">
+                  <i class="fas fa-palette fa-2x"></i>
+                </span>
+                <h4 class="title is-5">Modern Design</h4>
+                <p>Clean geometry, beautiful colors, gradient backgrounds</p>
+              </div>
+            </div>
+            <div class="column">
+              <div class="has-text-centered">
+                <span class="icon is-large has-text-warning">
+                  <i class="fas fa-code fa-2x"></i>
+                </span>
+                <h4 class="title is-5">Easy to Modify</h4>
+                <p>Procedural geometry, simple shaders, maintainable code</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <div id="footer"></div>
+  </body>
+</html>

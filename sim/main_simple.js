@@ -5,11 +5,11 @@ console.log('Loading main_simple.js');
 
 // Scene configuration for simple renderer
 const simple_scene_config = {
-    lightPos: [5, 10, 5],
-    lightColor: [1.0, 1.0, 0.9],
-    ambientStrength: 0.3,
-    diffuseStrength: 0.8,
-    specularStrength: 0.5,
+    lightPos: [8, 12, 8],
+    lightColor: [1.0, 0.95, 0.8], // Warm white light
+    ambientStrength: 0.4, // Increased ambient
+    diffuseStrength: 0.9, // Increased diffuse  
+    specularStrength: 0.6, // Increased specular
     dronemodelmatrix: modelMat4f(-2.0, 1.0, -2.0, 0.0, 0.0, 0.0, 0.05, 0.05, 0.05)
 };
 
